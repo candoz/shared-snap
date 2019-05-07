@@ -1,0 +1,51 @@
+### Package Files #
+*.jar
+*.zip
+*.tar.gz
+*.rar
+*.war
+*.nar
+*.ear
+
+### Gradle files #
+.gradle/
+build/
+.gradletasknamecache
+### Do not ignore the gradle wrapper jar
+!gradle-wrapper.jar
+
+### Intellij #
+*.iml
+*.ipr
+*.iws
+.idea
+out/
+
+# JetBrains templates
+**___jb_tmp___
+
+# Intellij Patch
+modules.xml
+
+# Windows folder config file
+Desktop.ini
+
+# Linux KDE Dolphin
+.directory
+
+# MAC OS
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Documentation directory
+docs/
+
+# Jars directory
+production/
+
+# Java class files
+*.class
+
+# Log Files
+*.log

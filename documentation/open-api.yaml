@@ -1,0 +1,210 @@
+openapi: 3.0.0
+
+servers:
+  - url: 'https://localhost:10000/v1'
+
+info:
+  title: Microworlds intercommunication enabler for Snap
+  description: A RESTful Web Service to put Berkeley's Snap microworlds in communication with each other.
+  version: '1.0'
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+paths:
+  '/connections/{nickname}':
+    post:
+      description: By passing the client's nickname, a connection will be established with the server and a token will be returned to the client.
+      parameters:
+        - $ref: '#/components/parameters/nickname'
+      responses:
+        '201':
+          description: The connection has been successfully estabilished
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '409':
+          description: Nickname already existing
+        '500':
+          description: Generic server error
+    
+    delete:
+      description: By passing the client's token and nickname, the respective connection with the server will be terminated.
+      parameters:
+        - $ref: '#/components/parameters/nickname'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '204':
+          description: The connection has been successfully terminated
+        '404':
+          description: Nickname not found
+        '500':
+          description: Generic server error
+  
+  '/messages/{nickname}':
+    post:
+      description: By passing a text message as the request body and the recipient nickname as a path parameter, a new message for him/her will be created. 
+      parameters:
+        - $ref: '#/components/parameters/nickname'
+        - $ref: '#/components/parameters/token'
+      requestBody:
+        required: true
+        description: The text message for the recipient.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '201':
+          description: The message has been successfully created
+        '404':
+          description: Recipient not found
+        '500':
+          description: Generic server error
+    
+    get:
+      description: By passing the client's nickname and its token, every message will be returned in an array.
+      parameters:
+        - $ref: '#/components/parameters/nickname'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: "Returned messages information"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+        '204':
+          description: "There are no messages for this user"
+        '400':
+          description: "Wrong token"
+        '404':
+          description: User not found
+        '500':
+          description: Generic server error
+    
+    delete:
+      description: "By passing the client's nickname and its token, every message addressed to him/her will be deleted."
+      parameters:
+        - $ref: '#/components/parameters/nickname'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '204':
+          description: "All the messages succesfully deleted"
+        '400':
+          description: "Wrong token"
+        '404':
+          description: "User not found"
+        '500':
+          description: "Generic server error"
+  
+  '/messages/{nickname}/oldest':
+    get:
+      description: "By passing the client's nickname and its token, the oldest message addressed to him/her will be returned."
+      parameters:
+        - $ref: '#/components/parameters/nickname'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: "Oldest message successfully returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        '204':
+          description: "There are no messages for this user"
+        '400':
+          description: "Wrong token"
+        '404':
+          description: "User not found"
+        '500':
+          description: "Generic server error"
+          
+  '/messages/{nickname}/latest':
+    get:
+      description: "By passing the client's nickname and its token, the latest message addressed to him/her will be returned."
+      parameters:
+        - $ref: '#/components/parameters/nickname'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '200':
+          description: "Latest message successfully returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        '204':
+          description: "There are no messages for this user"
+        '400':
+          description: "Wrong token"
+        '404':
+          description: "User not found"
+        '500':
+          description: "Generic server error"
+    
+  '/messages/{nickname}/{messageId}':
+    delete:
+      description: "By passing the client's nickname, its token and the message identifier, the corresponding message will be deleted."
+      parameters:
+        - $ref: '#/components/parameters/nickname'
+        - $ref: '#/components/parameters/messageId'
+        - $ref: '#/components/parameters/token'
+      responses:
+        '204':
+          description: "Message succesfully deleted"
+        '400':
+          description: "Wrong token or message identifier"
+        '404':
+          description: "User not found"
+        '500':
+          description: "Generic server error"
+    
+components:
+  parameters:
+    nickname:
+      name: nickname
+      in: path
+      description: The client's nickname
+      required: true
+      schema:
+        type: string
+        example: 'Mario'
+
+    token:
+      name: token
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/Token'
+    
+    messageId:
+      name: messageId
+      in: path
+      description: The message unique identifier
+      required: true
+      schema:
+        type: string
+        format: uuid
+        example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+  
+  schemas:
+    Token:
+      description: Security token to check the user identity
+      type: string
+      format: uuid
+      example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+    
+    Message:
+      description: "Contains all the information about a single message: the message identifier, the sender nickname and the actual text."
+      type: object
+      properties:
+        id: 
+          type: string
+          format: UUID
+        sender: 
+          type: string
+        content: 
+          type: object

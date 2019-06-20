@@ -14,16 +14,21 @@ import io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR
 import io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT
 import io.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
 import io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST
+import io.vertx.core.json.JsonObject
+import io.vertx.kotlin.core.json.get
 
 object RequestManager {
     private var vertx: Vertx? = null
-    private val CONFIG = json { obj(
+    private val MONGO_CONFIG = json { obj(
         "connection_string" to "mongodb://localhost:27017/snapdb"
     ) }
     private const val CONNECTIONS_COLLECTION = "connections"
     private const val DEFAULT_ID = "_id"
-    private const val CONNECTION_ID = "nickname"
+    private const val NICKNAME = "nickname"
     private const val TOKEN = "token"
+    private const val SENDER = "sender"
+    private const val RECIPIENT = "recipient"
+    private const val CONTENT = "content"
     private const val AUTHORIZATION = "Authorization"
     private const val DUPLICATED_KEY_CODE = "E11000"
 
@@ -35,13 +40,13 @@ object RequestManager {
 
     fun createConnection(context: RoutingContext) {
         val response = context.response()
-        val nickname = context.request().getParam(CONNECTION_ID)
+        val nickname = context.request().getParam(NICKNAME)
         val token = UUID.randomUUID().toString()
         val document = json { obj(
             DEFAULT_ID to nickname,
             TOKEN to token
         ) }
-        MongoClient.createNonShared(vertx, CONFIG).insert(CONNECTIONS_COLLECTION, document) { result ->
+        MongoClient.createNonShared(vertx, MONGO_CONFIG).insert(CONNECTIONS_COLLECTION, document) { result ->
             when {
                 result.succeeded() -> response
                     .putHeader("Content-Type", "text/plain")
@@ -55,7 +60,7 @@ object RequestManager {
 
     fun deleteConnection(context: RoutingContext) {
         val response = context.response()
-        val nickname = context.request().getParam(CONNECTION_ID)
+        val nickname = context.request().getParam(NICKNAME)
         try {
             val token = context.request().getHeader(AUTHORIZATION)
             UUID.fromString(token)
@@ -63,7 +68,7 @@ object RequestManager {
                 DEFAULT_ID to nickname,
                 TOKEN to token
             ) }
-            MongoClient.createNonShared(vertx, CONFIG).findOneAndDelete(CONNECTIONS_COLLECTION, document) { result ->
+            MongoClient.createNonShared(vertx, MONGO_CONFIG).findOneAndDelete(CONNECTIONS_COLLECTION, document) { result ->
                 when {
                     result.succeeded() ->
                         result.result()?.let { response.setStatusCode(NO_CONTENT.code()).end() }
@@ -77,7 +82,61 @@ object RequestManager {
     }
 
     fun createMessage(context: RoutingContext) {
-        
+        val response = context.response()
+        val recipient = context.request().getParam(NICKNAME)
+        val token = context.request().getHeader(AUTHORIZATION)
+        val body = context.bodyAsJson
+
+        /* First of all, check authentication token: */
+        val queryAuth = json { obj(
+            TOKEN to token
+        ) }
+        MongoClient.createNonShared(vertx, MONGO_CONFIG).find(CONNECTIONS_COLLECTION, queryAuth) { findOperation ->
+            when {
+                findOperation.succeeded() -> {
+                    val results: List<JsonObject> = findOperation.result()
+                    if (results.isEmpty()) {
+                        response.setStatusCode(BAD_REQUEST.code()).end()
+                    } else { /* Authentication OK, check if recipient exists: */
+                        val queryNickname = json { obj(
+                            DEFAULT_ID to recipient
+                        ) }
+
+                        MongoClient.createNonShared(vertx, MONGO_CONFIG).find(CONNECTIONS_COLLECTION, queryNickname) { findOperation2 ->
+                            when {
+                                findOperation2.succeeded() -> {
+                                    val results2: List<JsonObject> = findOperation2.result()
+                                    if (results2.isEmpty()) {
+                                        response.setStatusCode(NOT_FOUND.code()).end()
+                                    } else { /* Recipient exists, add the new message: */
+                                        val messageId = UUID.randomUUID().toString()
+                                        val newMessageDocument = json { obj(
+                                            DEFAULT_ID to messageId,
+                                            SENDER to results[0][NICKNAME],
+                                            RECIPIENT to recipient,
+                                            CONTENT to body
+                                        ) }
+                                        MongoClient.createNonShared(vertx, MONGO_CONFIG).insert(CONNECTIONS_COLLECTION, newMessageDocument) { createOperation ->
+                                            when {
+                                                createOperation.succeeded() -> response.setStatusCode(CREATED.code()).end()
+                                                isDuplicateKey(createOperation.cause().message) -> createMessage(context)
+                                                else -> response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
+                                            }
+                                        }
+                                    }
+                                }
+                                findOperation2.failed() -> {
+                                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
+                                }
+                            }
+                        }
+                    }
+                }
+                findOperation.failed() -> {
+                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
+                }
+            }
+        }
     }
 
     fun retrieveMessages(context: RoutingContext) {

@@ -1,14 +1,19 @@
 package service
 
-import io.netty.handler.codec.http.HttpResponseStatus.*
+import java.lang.Exception
+import java.util.UUID
 import io.vertx.core.Vertx
 import io.vertx.core.json.Json
 import io.vertx.ext.mongo.MongoClient
 import io.vertx.ext.web.RoutingContext
 import io.vertx.kotlin.core.json.json
 import io.vertx.kotlin.core.json.obj
-import java.lang.Exception
-import java.util.*
+import io.netty.handler.codec.http.HttpResponseStatus.CREATED
+import io.netty.handler.codec.http.HttpResponseStatus.CONFLICT
+import io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR
+import io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT
+import io.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
+import io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST
 
 object RequestManager {
     private var vertx: Vertx? = null

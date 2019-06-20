@@ -55,13 +55,13 @@ object RequestManager {
             DEFAULT_ID to nickname,
             TOKEN to token
         ) }
-        MongoClient.createNonShared(vertx, MONGO_CONFIG).insert(CONNECTIONS_COLLECTION, document) { result ->
+        MongoClient.createNonShared(vertx, MONGO_CONFIG).insert(CONNECTIONS_COLLECTION, document) { insertOperation ->
             when {
-                result.succeeded() -> response
+                insertOperation.succeeded() -> response
                     .putHeader("Content-Type", "text/plain")
                     .setStatusCode(CREATED.code())
                     .end(Json.encodePrettily(token))
-                isDuplicateKey(result.cause().message) -> response.setStatusCode(CONFLICT.code()).end()
+                isDuplicateKey(insertOperation.cause().message) -> response.setStatusCode(CONFLICT.code()).end()
                 else -> response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
             }
         }
@@ -77,11 +77,13 @@ object RequestManager {
                 DEFAULT_ID to nickname,
                 TOKEN to token
             ) }
-            MongoClient.createNonShared(vertx, MONGO_CONFIG).findOneAndDelete(CONNECTIONS_COLLECTION, document) { result ->
+            MongoClient.createNonShared(vertx, MONGO_CONFIG).removeDocument(CONNECTIONS_COLLECTION, document) { removeOperation ->
                 when {
-                    result.succeeded() ->
-                        result.result()?.let { response.setStatusCode(NO_CONTENT.code()).end() }
-                            ?: response.setStatusCode(NOT_FOUND.code()).end()
+                    removeOperation.succeeded() ->
+                        if (removeOperation.result().removedCount == 0L)
+                            response.setStatusCode(NOT_FOUND.code()).end()
+                        else
+                            response.setStatusCode(NO_CONTENT.code()).end()
                     else -> response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
                 }
             }

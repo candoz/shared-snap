@@ -1,5 +1,6 @@
 package service
 
+import io.netty.handler.codec.http.HttpResponseStatus.*
 import java.lang.Exception
 import java.util.UUID
 import io.vertx.core.Vertx
@@ -8,12 +9,6 @@ import io.vertx.ext.mongo.MongoClient
 import io.vertx.ext.web.RoutingContext
 import io.vertx.kotlin.core.json.json
 import io.vertx.kotlin.core.json.obj
-import io.netty.handler.codec.http.HttpResponseStatus.CREATED
-import io.netty.handler.codec.http.HttpResponseStatus.CONFLICT
-import io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR
-import io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT
-import io.netty.handler.codec.http.HttpResponseStatus.NOT_FOUND
-import io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.json.get
 
@@ -154,6 +149,54 @@ object RequestManager {
     }
 
     fun retrieveMessages(context: RoutingContext) {
+        val response = context.response()
+        val nickname = context.request().getParam(NICKNAME)
+        val token = context.request().getHeader(AUTHORIZATION)
+
+        /* First of all, check authentication token: */
+        val queryAuth = json { obj(
+            DEFAULT_ID to nickname,
+            TOKEN to token
+        ) }
+        MongoClient.createNonShared(vertx, MONGO_CONFIG).find(CONNECTIONS_COLLECTION, queryAuth) { findOperation ->
+            when {
+                findOperation.succeeded() -> {
+                    val results: List<JsonObject> = findOperation.result()
+                    if (results.isEmpty()) {
+                        response.setStatusCode(BAD_REQUEST.code()).end()
+                    } else { /* Authentication OK, check for my messages */
+                        val queryMessages = json { obj(
+                            RECIPIENT to nickname
+                        ) }
+
+                        MongoClient.createNonShared(vertx, MONGO_CONFIG).find(MESSAGES_COLLECTION, queryMessages) { findOperation2 ->
+                            when {
+                                findOperation2.succeeded() -> {
+                                    val results2: List<JsonObject> = findOperation2.result() //TODO: check if null???
+                                    if (results2.isEmpty()) {
+                                        response.setStatusCode(NO_CONTENT.code()).end()
+                                    } else { /* There is at least one message for me */
+
+                                        val responseBody = results2.map {msg -> json { obj(
+                                            "id" to msg[DEFAULT_ID],
+                                            "sender" to msg[SENDER],
+                                            "content" to msg[CONTENT]
+                                        ) } }
+                                        response.setStatusCode(OK.code()).end(Json.encodePrettily(responseBody))
+                                    }
+                                }
+                                findOperation2.failed() -> {
+                                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
+                                }
+                            }
+                        }
+                    }
+                }
+                findOperation.failed() -> {
+                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
+                }
+            }
+        }
     }
 
     fun deleteMessages(context: RoutingContext) {

@@ -23,6 +23,7 @@ object RequestManager {
         "connection_string" to "mongodb://localhost:27017/snapdb"
     ) }
     private const val CONNECTIONS_COLLECTION = "connections"
+    private const val MESSAGES_COLLECTION = "messages"
     private const val DEFAULT_ID = "_id"
     private const val NICKNAME = "nickname"
     private const val TOKEN = "token"
@@ -112,11 +113,11 @@ object RequestManager {
                                         val messageId = UUID.randomUUID().toString()
                                         val newMessageDocument = json { obj(
                                             DEFAULT_ID to messageId,
-                                            SENDER to results[0][NICKNAME],
+                                            SENDER to results[0][DEFAULT_ID],
                                             RECIPIENT to recipient,
                                             CONTENT to body
                                         ) }
-                                        MongoClient.createNonShared(vertx, MONGO_CONFIG).insert(CONNECTIONS_COLLECTION, newMessageDocument) { createOperation ->
+                                        MongoClient.createNonShared(vertx, MONGO_CONFIG).insert(MESSAGES_COLLECTION, newMessageDocument) { createOperation ->
                                             when {
                                                 createOperation.succeeded() -> response.setStatusCode(CREATED.code()).end()
                                                 isDuplicateKey(createOperation.cause().message) -> createMessage(context)

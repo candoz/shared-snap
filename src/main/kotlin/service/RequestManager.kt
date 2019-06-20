@@ -25,6 +25,7 @@ object RequestManager {
     private const val SENDER = "sender"
     private const val RECIPIENT = "recipient"
     private const val CONTENT = "content"
+    private const val MESSAGE_ID = "messageId"
     private const val AUTHORIZATION = "Authorization"
     private const val DUPLICATED_KEY_CODE = "E11000"
 
@@ -242,6 +243,44 @@ object RequestManager {
     }
 
     fun deleteSingleMessage(context: RoutingContext) {
+        val response = context.response()
+        val nickname = context.request().getParam(NICKNAME)
+        val messageId = context.request().getParam(MESSAGE_ID)
+        val token = context.request().getHeader(AUTHORIZATION)
+
+        /* First of all, check authentication token: */
+        val queryAuth = json { obj(
+            DEFAULT_ID to nickname,
+            TOKEN to token
+        ) }
+        MongoClient.createNonShared(vertx, MONGO_CONFIG).find(CONNECTIONS_COLLECTION, queryAuth) { findOperation ->
+            when {
+                findOperation.succeeded() -> {
+                    if (findOperation.result().isEmpty()) {
+                        response.setStatusCode(BAD_REQUEST.code()).end()
+                    } else { /* Authentication OK, check for my messages */
+                        val queryMessages = json { obj(
+                            MESSAGE_ID to messageId,
+                            RECIPIENT to nickname
+                        ) }
+
+                        MongoClient.createNonShared(vertx, MONGO_CONFIG).removeDocument(MESSAGES_COLLECTION, queryMessages) { findOperation2 ->
+                            when {
+                                findOperation2.succeeded() -> {
+                                    response.setStatusCode(NO_CONTENT.code()).end()
+                                }
+                                findOperation2.failed() -> {
+                                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
+                                }
+                            }
+                        }
+                    }
+                }
+                findOperation.failed() -> {
+                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
+                }
+            }
+        }
     }
 
     fun retrieveOldestMessage(context: RoutingContext) {

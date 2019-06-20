@@ -17,16 +17,17 @@ import io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST
 
 object RequestManager {
     private var vertx: Vertx? = null
-    private val CONFIG = json {
-        obj(
-            "connection_string" to "mongodb://localhost:27017/snapdb")
-    }
+    private val CONFIG = json { obj(
+        "connection_string" to "mongodb://localhost:27017/snapdb"
+    ) }
     private const val CONNECTIONS_COLLECTION = "connections"
-    private const val DOCUMENT_ID = "_id"
+    private const val DEFAULT_ID = "_id"
     private const val CONNECTION_ID = "nickname"
     private const val TOKEN = "token"
     private const val AUTHORIZATION = "Authorization"
     private const val DUPLICATED_KEY_CODE = "E11000"
+
+    private fun isDuplicateKey(errorMessage: String?) = errorMessage?.startsWith(DUPLICATED_KEY_CODE) ?: false
 
     fun initializeRequestManager(vertx: Vertx) {
         RequestManager.vertx = vertx
@@ -36,11 +37,10 @@ object RequestManager {
         val response = context.response()
         val nickname = context.request().getParam(CONNECTION_ID)
         val token = UUID.randomUUID().toString()
-        val document = json {
-            obj(
-                DOCUMENT_ID to nickname,
-                TOKEN to token)
-        }
+        val document = json { obj(
+            DEFAULT_ID to nickname,
+            TOKEN to token
+        ) }
         MongoClient.createNonShared(vertx, CONFIG).insert(CONNECTIONS_COLLECTION, document) { result ->
             when {
                 result.succeeded() -> response
@@ -53,19 +53,16 @@ object RequestManager {
         }
     }
 
-    private fun isDuplicateKey(errorMessage: String?) = errorMessage?.startsWith(DUPLICATED_KEY_CODE) ?: false
-
     fun deleteConnection(context: RoutingContext) {
         val response = context.response()
         val nickname = context.request().getParam(CONNECTION_ID)
         try {
             val token = context.request().getHeader(AUTHORIZATION)
             UUID.fromString(token)
-            val document = json {
-                obj(
-                    DOCUMENT_ID to nickname,
-                    TOKEN to token)
-            }
+            val document = json { obj(
+                DEFAULT_ID to nickname,
+                TOKEN to token
+            ) }
             MongoClient.createNonShared(vertx, CONFIG).findOneAndDelete(CONNECTIONS_COLLECTION, document) { result ->
                 when {
                     result.succeeded() ->
@@ -80,6 +77,7 @@ object RequestManager {
     }
 
     fun createMessage(context: RoutingContext) {
+        
     }
 
     fun retrieveMessages(context: RoutingContext) {

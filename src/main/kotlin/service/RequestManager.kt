@@ -35,8 +35,21 @@ object RequestManager {
 
     private fun isDuplicateKey(errorMessage: String?) = errorMessage?.startsWith(DUPLICATED_KEY_CODE) ?: false
 
+    private fun dropAllCollections() {
+        val client = MongoClient.createNonShared(vertx, MONGO_CONFIG)
+        client.getCollections { res ->
+            if (res.succeeded()) {
+                val collections = res.result()
+                for (c in collections) {
+                    client.dropCollection(c) { }
+                }
+            }
+        }
+    }
+
     fun initializeRequestManager(vertx: Vertx) {
         RequestManager.vertx = vertx
+//        dropAllCollections()
     }
 
     fun createConnection(context: RoutingContext) {

@@ -70,7 +70,7 @@ object RequestManager {
                 insertOperation.succeeded() -> response
                     .putHeader("Content-Type", "text/plain")
                     .setStatusCode(CREATED.code())
-                    .end(Json.encodePrettily(token))
+                    .end(token)
                 isDuplicateKey(insertOperation.cause().message) -> response.setStatusCode(CONFLICT.code()).end()
                 else -> response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
             }

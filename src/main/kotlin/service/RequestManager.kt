@@ -58,7 +58,9 @@ object RequestManager {
     }
 
     fun createConnection(context: RoutingContext) {
+        println("INSIDE!")
         val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
+            .putHeader("Access-Control-Allow-Headers", "*")
         val nickname = context.request().getParam(NICKNAME)
         val token = UUID.randomUUID().toString()
         val document = json { obj(
@@ -103,7 +105,10 @@ object RequestManager {
     }
 
     fun createMessage(context: RoutingContext) {
-        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
+        println("INSIDE!")
+        val response = context.response()
+            .putHeader("Access-Control-Allow-Origin", "*")
+            .putHeader("Access-Control-Allow-Headers", "Authorization")
         val recipient = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
         val body = context.bodyAsJson

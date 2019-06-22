@@ -20,6 +20,8 @@ class SharedSnap : AbstractVerticle() {
             route().handler(BodyHandler.create())
             post(CONNECTIONS_PATH).handler { RequestManager.createConnection(it) }
             delete(CONNECTIONS_PATH).handler { RequestManager.deleteConnection(it) }
+
+            options(MESSAGES_PATH).handler {RequestManager.optionsMessage(it)}
             post(MESSAGES_PATH).handler { RequestManager.createMessage(it) }
             get(MESSAGES_PATH).handler { RequestManager.retrieveMessages(it) }
             delete(MESSAGES_PATH).handler { RequestManager.deleteMessages(it) }

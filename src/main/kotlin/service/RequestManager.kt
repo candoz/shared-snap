@@ -58,7 +58,6 @@ object RequestManager {
     }
 
     fun createConnection(context: RoutingContext) {
-        println("INSIDE!")
         val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
             .putHeader("Access-Control-Allow-Headers", "*")
         val nickname = context.request().getParam(NICKNAME)
@@ -106,11 +105,12 @@ object RequestManager {
 
     fun optionsMessage(context: RoutingContext) {
         println("Inside OPTIONS")
-        val response = context.response()
+        context.response()
             .putHeader("Access-Control-Allow-Origin", "*")
             .putHeader("Access-Control-Allow-Headers", "*")
             .putHeader("Access-Control-Allow-Methods", "*")
-        response.setStatusCode(OK.code()).end()
+            .setStatusCode(OK.code())
+            .end()
     }
     fun createMessage(context: RoutingContext) {
         println("Inside POST")

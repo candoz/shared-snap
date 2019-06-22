@@ -10,6 +10,7 @@ import io.netty.handler.codec.http.HttpResponseStatus.OK
 import java.lang.Exception
 import java.util.UUID
 import io.vertx.core.Vertx
+import io.vertx.core.http.HttpServerResponse
 import io.vertx.core.json.Json
 import io.vertx.ext.mongo.MongoClient
 import io.vertx.ext.web.RoutingContext
@@ -94,7 +95,7 @@ object RequestManager {
                         if (removeOperation.result().removedCount == 0L)
                             response.setStatusCode(NOT_FOUND.code()).end()
                         else
-                            response.setStatusCode(NO_CONTENT.code()).end()
+                            deleteAllMessages(nickname, response)
                     else -> response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
                 }
             }
@@ -239,20 +240,7 @@ object RequestManager {
                     if (results.isEmpty()) {
                         response.setStatusCode(BAD_REQUEST.code()).end()
                     } else { /* Authentication OK, check for my messages */
-                        val queryMessages = json { obj(
-                            RECIPIENT to nickname
-                        ) }
-
-                        MongoClient.createNonShared(vertx, MONGO_CONFIG).removeDocuments(MESSAGES_COLLECTION, queryMessages) { findOperation2 ->
-                            when {
-                                findOperation2.succeeded() -> {
-                                    response.setStatusCode(NO_CONTENT.code()).end()
-                                }
-                                findOperation2.failed() -> {
-                                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
-                                }
-                            }
-                        }
+                        deleteAllMessages(nickname, response)
                     }
                 }
                 findOperation.failed() -> {
@@ -360,6 +348,22 @@ object RequestManager {
                     }
                 }
                 findOperation.failed() -> {
+                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
+                }
+            }
+        }
+    }
+
+    private fun deleteAllMessages(nickname: String, response: HttpServerResponse) {
+        val queryMessages = json { obj(
+            RECIPIENT to nickname
+        ) }
+        MongoClient.createNonShared(vertx, MONGO_CONFIG).removeDocuments(MESSAGES_COLLECTION, queryMessages) { deleteOperation ->
+            when {
+                deleteOperation.succeeded() -> {
+                    response.setStatusCode(NO_CONTENT.code()).end()
+                }
+                deleteOperation.failed() -> {
                     response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
                 }
             }

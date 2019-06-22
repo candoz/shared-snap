@@ -58,8 +58,7 @@ object RequestManager {
     }
 
     fun createConnection(context: RoutingContext) {
-        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
-            .putHeader("Access-Control-Allow-Headers", "*")
+        val response = context.response()
         val nickname = context.request().getParam(NICKNAME)
         val token = UUID.randomUUID().toString()
         val document = json { obj(
@@ -69,6 +68,7 @@ object RequestManager {
         MongoClient.createNonShared(vertx, MONGO_CONFIG).insert(CONNECTIONS_COLLECTION, document) { insertOperation ->
             when {
                 insertOperation.succeeded() -> response
+                    .putHeader("Access-Control-Allow-Origin", "*")
                     .putHeader("Content-Type", "text/plain")
                     .setStatusCode(CREATED.code())
                     .end(token)
@@ -79,7 +79,7 @@ object RequestManager {
     }
 
     fun deleteConnection(context: RoutingContext) {
-        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
+        val response = context.response()
         val nickname = context.request().getParam(NICKNAME)
         try {
             val token = context.request().getHeader(AUTHORIZATION)
@@ -103,17 +103,17 @@ object RequestManager {
         }
     }
 
-    fun optionsMessage(context: RoutingContext) {
+    fun optionsCors(context: RoutingContext) {
         context.response()
             .putHeader("Access-Control-Allow-Origin", "*")
             .putHeader("Access-Control-Allow-Headers", "*")
+            .putHeader("Access-Control-Allow-Methods", "*")
             .setStatusCode(OK.code())
             .end()
     }
+
     fun createMessage(context: RoutingContext) {
         val response = context.response()
-            .putHeader("Access-Control-Allow-Origin", "*")
-            .putHeader("Access-Control-Allow-Headers", "*")
         val recipient = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
         val body = context.bodyAsJson
@@ -169,7 +169,7 @@ object RequestManager {
     }
 
     fun retrieveMessages(context: RoutingContext) {
-        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
+        val response = context.response()
         val nickname = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
 
@@ -202,7 +202,10 @@ object RequestManager {
                                             "sender" to msg[SENDER],
                                             "content" to msg[CONTENT]
                                         ) } }
-                                        response.setStatusCode(OK.code()).end(Json.encodePrettily(responseBody))
+                                        response
+                                            .putHeader("Access-Control-Allow-Origin", "*")
+                                            .setStatusCode(OK.code())
+                                            .end(Json.encodePrettily(responseBody))
                                     }
                                 }
                                 findOperation2.failed() -> {
@@ -220,7 +223,7 @@ object RequestManager {
     }
 
     fun deleteMessages(context: RoutingContext) {
-        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
+        val response = context.response()
         val nickname = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
 
@@ -260,7 +263,7 @@ object RequestManager {
     }
 
     fun deleteSingleMessage(context: RoutingContext) {
-        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
+        val response = context.response()
         val nickname = context.request().getParam(NICKNAME)
         val messageId = context.request().getParam(MESSAGE_ID)
         val token = context.request().getHeader(AUTHORIZATION)
@@ -277,7 +280,7 @@ object RequestManager {
                         response.setStatusCode(BAD_REQUEST.code()).end()
                     } else { /* Authentication OK, check for my messages */
                         val queryMessages = json { obj(
-                            MESSAGE_ID to messageId,
+                            DEFAULT_ID to messageId,
                             RECIPIENT to nickname
                         ) }
 
@@ -309,7 +312,7 @@ object RequestManager {
     }
 
     private fun retrieveOrderedMessage(context: RoutingContext, order: Int) {
-        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
+        val response = context.response()
         val nickname = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
 
@@ -343,7 +346,10 @@ object RequestManager {
                                             "sender" to results2[0][SENDER],
                                             "content" to results2[0][CONTENT]
                                         ) }
-                                        response.setStatusCode(OK.code()).end(Json.encodePrettily(responseBody))
+                                        response
+                                            .setStatusCode(OK.code())
+                                            .putHeader("Access-Control-Allow-Origin", "*")
+                                            .end(Json.encodePrettily(responseBody))
                                     }
                                 }
                                 findOperation2.failed() -> {

@@ -19,14 +19,17 @@ class SharedSnap : AbstractVerticle() {
         return Router.router(vertx).apply {
             route().handler(BodyHandler.create())
             post(CONNECTIONS_PATH).handler { RequestManager.createConnection(it) }
+            options(CONNECTIONS_PATH).handler { RequestManager.optionsCors(it) }
             delete(CONNECTIONS_PATH).handler { RequestManager.deleteConnection(it) }
-
-            options(MESSAGES_PATH).handler {RequestManager.optionsMessage(it)}
+            options(MESSAGES_PATH).handler { RequestManager.optionsCors(it) }
             post(MESSAGES_PATH).handler { RequestManager.createMessage(it) }
             get(MESSAGES_PATH).handler { RequestManager.retrieveMessages(it) }
             delete(MESSAGES_PATH).handler { RequestManager.deleteMessages(it) }
+            options(OLDEST_MESSAGE_PATH).handler { RequestManager.optionsCors(it) }
             get(OLDEST_MESSAGE_PATH).handler { RequestManager.retrieveOldestMessage(it) }
+            options(LATEST_MESSAGE_PATH).handler { RequestManager.optionsCors(it) }
             get(LATEST_MESSAGE_PATH).handler { RequestManager.retrieveLatestMessage(it) }
+            options(SINGLE_MESSAGE_PATH).handler { RequestManager.optionsCors(it) }
             delete(SINGLE_MESSAGE_PATH).handler { RequestManager.deleteSingleMessage(it) }
         }
     }

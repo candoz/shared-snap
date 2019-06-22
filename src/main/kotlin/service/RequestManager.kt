@@ -59,7 +59,7 @@ object RequestManager {
     }
 
     fun createConnection(context: RoutingContext) {
-        val response = context.response()
+        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
         val nickname = context.request().getParam(NICKNAME)
         val token = UUID.randomUUID().toString()
         val document = json { obj(
@@ -69,7 +69,6 @@ object RequestManager {
         MongoClient.createNonShared(vertx, MONGO_CONFIG).insert(CONNECTIONS_COLLECTION, document) { insertOperation ->
             when {
                 insertOperation.succeeded() -> response
-                    .putHeader("Access-Control-Allow-Origin", "*")
                     .putHeader("Content-Type", "text/plain")
                     .setStatusCode(CREATED.code())
                     .end(token)
@@ -80,7 +79,7 @@ object RequestManager {
     }
 
     fun deleteConnection(context: RoutingContext) {
-        val response = context.response()
+        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
         val nickname = context.request().getParam(NICKNAME)
         try {
             val token = context.request().getHeader(AUTHORIZATION)
@@ -114,7 +113,7 @@ object RequestManager {
     }
 
     fun createMessage(context: RoutingContext) {
-        val response = context.response()
+        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
         val recipient = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
         val body = context.bodyAsJson
@@ -170,7 +169,7 @@ object RequestManager {
     }
 
     fun retrieveMessages(context: RoutingContext) {
-        val response = context.response()
+        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
         val nickname = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
 
@@ -204,7 +203,6 @@ object RequestManager {
                                             "content" to msg[CONTENT]
                                         ) } }
                                         response
-                                            .putHeader("Access-Control-Allow-Origin", "*")
                                             .setStatusCode(OK.code())
                                             .end(Json.encodePrettily(responseBody))
                                     }
@@ -224,7 +222,7 @@ object RequestManager {
     }
 
     fun deleteMessages(context: RoutingContext) {
-        val response = context.response()
+        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
         val nickname = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
 
@@ -251,7 +249,7 @@ object RequestManager {
     }
 
     fun deleteSingleMessage(context: RoutingContext) {
-        val response = context.response()
+        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
         val nickname = context.request().getParam(NICKNAME)
         val messageId = context.request().getParam(MESSAGE_ID)
         val token = context.request().getHeader(AUTHORIZATION)
@@ -300,7 +298,7 @@ object RequestManager {
     }
 
     private fun retrieveOrderedMessage(context: RoutingContext, order: Int) {
-        val response = context.response()
+        val response = context.response().putHeader("Access-Control-Allow-Origin", "*")
         val nickname = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
 
@@ -336,7 +334,6 @@ object RequestManager {
                                         ) }
                                         response
                                             .setStatusCode(OK.code())
-                                            .putHeader("Access-Control-Allow-Origin", "*")
                                             .end(Json.encodePrettily(responseBody))
                                     }
                                 }

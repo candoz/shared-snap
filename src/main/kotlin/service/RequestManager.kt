@@ -104,20 +104,16 @@ object RequestManager {
     }
 
     fun optionsMessage(context: RoutingContext) {
-        println("Inside OPTIONS")
         context.response()
             .putHeader("Access-Control-Allow-Origin", "*")
             .putHeader("Access-Control-Allow-Headers", "*")
-            .putHeader("Access-Control-Allow-Methods", "*")
             .setStatusCode(OK.code())
             .end()
     }
     fun createMessage(context: RoutingContext) {
-        println("Inside POST")
         val response = context.response()
             .putHeader("Access-Control-Allow-Origin", "*")
             .putHeader("Access-Control-Allow-Headers", "*")
-            .putHeader("Access-Control-Allow-Methods", "*")
         val recipient = context.request().getParam(NICKNAME)
         val token = context.request().getHeader(AUTHORIZATION)
         val body = context.bodyAsJson
@@ -126,6 +122,7 @@ object RequestManager {
         val queryAuth = json { obj(
             TOKEN to token
         ) }
+
         MongoClient.createNonShared(vertx, MONGO_CONFIG).find(CONNECTIONS_COLLECTION, queryAuth) { findOperation ->
             when {
                 findOperation.succeeded() -> {
@@ -155,22 +152,18 @@ object RequestManager {
                                         MongoClient.createNonShared(vertx, MONGO_CONFIG).insert(MESSAGES_COLLECTION, newMessageDocument) { createOperation ->
                                             when {
                                                 createOperation.succeeded() -> response.setStatusCode(CREATED.code()).end()
-                                                isDuplicateKey(createOperation.cause().message) -> createMessage(context)
+                                                isDuplicateKey(createOperation.cause().message) -> createMessage(context) // Try with another UUID
                                                 else -> response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
                                             }
                                         }
                                     }
                                 }
-                                findOperation2.failed() -> {
-                                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
-                                }
+                                findOperation2.failed() -> response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
                             }
                         }
                     }
                 }
-                findOperation.failed() -> {
-                    response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
-                }
+                findOperation.failed() -> response.setStatusCode(INTERNAL_SERVER_ERROR.code()).end()
             }
         }
     }

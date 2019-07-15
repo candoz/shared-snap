@@ -1,4 +1,12 @@
 # Shared Snap!
+
+## Team members
+Marco Canducci (marco.canducci@studio.unibo.it)       
+Daniele Schiavi (daniele.schiavi@studio.unibo.it)  
+
+## Course reference
+https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2018/430273
+
 ## A Computational Thinking Project
 
 The *Shared Snap!* project wants to combine [Berkeley's Snap!](https://snap.berkeley.edu/) learning tool with a custom RESTful Web Server in order to allow microworlds intercommunication. 
@@ -20,13 +28,6 @@ The format of the message to be sent to the server:
 The image below shows the *sequence diagram* for the data exchanged between the client actor (the one who wants to communicate with another actor remotely), the Walkie Talkie actor developed by us, the custom Web Server.
 
 ![alt text](https://raw.githubusercontent.com/candoz/shared-snap/master/images/sequence-diagram.png "Sequence diagram")
-
-## Team members
-Marco Canducci (marco.canducci@studio.unibo.it)       
-Daniele Schiavi (daniele.schiavi@studio.unibo.it)  
-
-## Course reference
-https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2018/430273
 
 ## Server side
 

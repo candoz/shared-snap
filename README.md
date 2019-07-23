@@ -96,5 +96,6 @@ To run the demo, remember to start the Web Service first, and then open the foll
 
 Left screen:  
 https://snap.berkeley.edu/snap/snap.html#present:Username=ct-unibo-ce-1819&ProjectName=Canducci%20Schiavi%20-%20left%20-%20Shared%20Snap%20Actor  
+
 Right screen:  
 https://snap.berkeley.edu/snap/snap.html#present:Username=ct-unibo-ce-1819&ProjectName=Canducci%20Schiavi%20-%20right%20-%20Shared%20Snap%20Actor       

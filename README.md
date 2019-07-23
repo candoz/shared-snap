@@ -94,7 +94,7 @@ To showcase our project functionalities we decided to implement a public demo th
 
 To run the demo, remember to start the Web Service first, and then open the following links.
 
-Left screen:
-https://snap.berkeley.edu/snap/snap.html#present:Username=ct-unibo-ce-1819&ProjectName=Canducci%20Schiavi%20-%20left%20-%20Shared%20Snap%20Actor
-Right screen:
+Left screen:  
+https://snap.berkeley.edu/snap/snap.html#present:Username=ct-unibo-ce-1819&ProjectName=Canducci%20Schiavi%20-%20left%20-%20Shared%20Snap%20Actor  
+Right screen:  
 https://snap.berkeley.edu/snap/snap.html#present:Username=ct-unibo-ce-1819&ProjectName=Canducci%20Schiavi%20-%20right%20-%20Shared%20Snap%20Actor       

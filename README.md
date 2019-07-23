@@ -1,8 +1,8 @@
 # Shared Snap!
 
 ## Team members
-Marco Canducci (marco.canducci@studio.unibo.it)       
-Daniele Schiavi (daniele.schiavi@studio.unibo.it)  
+Marco Canducci - marco.canducci@studio.unibo.it       
+Daniele Schiavi - daniele.schiavi@studio.unibo.it  
 
 ## Course reference
 https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2018/430273

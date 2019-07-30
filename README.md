@@ -62,6 +62,8 @@ We started the client development by experimenting with two official *Snap!* lib
 
 From there, we added a new abstraction layer through a set of new *Snap!* blocks, useful for the interaction with our custom Web server.
 
+[walkie talkie actor](client/walkie%20talkie.xml)
+
 ![alt text](https://raw.githubusercontent.com/candoz/shared-snap/master/images/local-walkie-talkie-blocks.png "Local walkie talkie blocks")
 
 Finally, we added an additional abstraction layer with the purpose of hiding technicalities such as the polling and authentication system behind the *Walkie Talkie actor*, allowing the use of the application even by less experienced users.

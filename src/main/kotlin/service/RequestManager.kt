@@ -19,12 +19,18 @@ import io.vertx.kotlin.core.json.obj
 import io.vertx.core.json.JsonObject
 import io.vertx.ext.mongo.FindOptions
 import io.vertx.kotlin.core.json.get
+import org.yaml.snakeyaml.Yaml
 import java.time.Instant
 
 object RequestManager {
     private var vertx: Vertx? = null
+    private val yaml = Yaml()
+    private val inputStream = this::class.java
+        .classLoader
+        .getResourceAsStream("config.yaml")
+    private val obj = yaml.load<Map<String, Any>>(inputStream)
     private val MONGO_CONFIG = json { obj(
-        "connection_string" to "mongodb://localhost:27017/snapdb"
+        "connection_string" to (obj["connection_string"] as String)
     ) }
     private const val CONNECTIONS_COLLECTION = "connections"
     private const val MESSAGES_COLLECTION = "messages"

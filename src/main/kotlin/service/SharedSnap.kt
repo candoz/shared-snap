@@ -13,8 +13,8 @@ class SharedSnap : AbstractVerticle() {
             .classLoader
             .getResourceAsStream("config.yaml")
         val obj = yaml.load<Map<String, Any>>(inputStream)
-        val port = obj["PORT"] as Int
-        val host = obj["HOST"] as String
+        val port = obj["port"] as Int
+        val host = obj["host"] as String
         vertx
             .createHttpServer()
             .requestHandler(createRouter())

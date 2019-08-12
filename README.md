@@ -84,18 +84,20 @@ To use *Shared Snap!* you need to import first our custom blocks and then the Wa
 
 The *Walkie Talkie* actor offers simple a API for connecting, disconnecting, sending and receiving messages.
 
-- Connect as <*your nickname*> to the server with the provided address. This block will fail if another user is already connected to the same server with the same nickname.
-![Connect block img](images/connect-block.png "Connect block")
+- ![Connect block img](images/connect-block.png "Connect block")<br />
+Connect as <*your nickname*> to the server with the provided address. This block will fail if another user is already connected to the same server with the same nickname.
 
-- Disconnect your user from the server; as a result your nickname will become available again in that server.
-![Disconnect block img](images/disconnect-block.png "Disconnect block")
+- ![Disconnect block img](images/disconnect-block.png "Disconnect block")<br />
+Disconnect your user from the server; as a result your nickname will become available again in that server.
 
-- Send a message specifying the JSON content and the recepient username.
-![Send JSON block img](images/send-json-block.png "Send JSON block")
 
-- To **receive a remote message** you must use the `when I receive` block with the "*any message*" parameter selected and then filter the message for the *remote message* type.
+- ![Send JSON block img](images/send-json-block.png "Send JSON block")<br />
+Send a message specifying the JSON content and the recepient username.
+
+- ![Receive remote message img](images/remote-message.png "Remote message")<br />
+To **receive a remote message** you must use the `when I receive` block with the "*any message*" parameter selected and then filter the message for the *remote message* type.<br />
 Note that every time our Walkie Talkie actor receives a message intended for our user (sent to our nickname) it broadcasts a JSON message with the fields `type` set to "*remote message*", `sender` and `content` where the `content` corresponds to the actual JSON object that was sent to us by the `sender`.
-![Receive remote message img](images/remote-message.png "Remote message")
+
 ```
 {
     "type": "remote message",
@@ -104,7 +106,7 @@ Note that every time our Walkie Talkie actor receives a message intended for our
 }
 ```
 
-- Using the `when I receive` block it's also possible to observe many informational messages that come from the Walkie Talkie as listed in the image below.
+- Using the `when I receive` block it's also possible to observe many informational messages that come from the Walkie Talkie as listed in the image below.<br />
 ![Message types img](images/messages.png "Notification message types")
 
 ---

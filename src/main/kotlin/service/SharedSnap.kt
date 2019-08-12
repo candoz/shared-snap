@@ -3,7 +3,7 @@ package service
 import io.vertx.core.AbstractVerticle
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.BodyHandler
-import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.Yaml
 
 class SharedSnap : AbstractVerticle() {
 

@@ -32,7 +32,8 @@ The custom Web Server has been developed using *Kotlin*, *VertX* and *MongoDB*, 
 
 ### Server execution requirements
 
-- Java 8 must be installed,
+- Java 8 must be installed;
+
 - a MongoDB daemon must be running on `localhost:10000`.
 
 ### Server Setup
@@ -83,21 +84,21 @@ To use *Shared Snap!* you need to import first our custom blocks and then the Wa
 
 The *Walkie Talkie* actor offers simple a API for connecting, disconnecting, sending and receiving messages.
 
-- ![Connect block img](images/connect-block.png "Connect block")
-Connect as <*your nickname*> to the server with the provided address. This block will fail if another user is already connected to the same server with the same nickname.
+- Connect as <*your nickname*> to the server with the provided address. This block will fail if another user is already connected to the same server with the same nickname.
+![Connect block img](images/connect-block.png "Connect block")
 
-- ![Disconnect block img](images/disconnect-block.png "Disconnect block")
-Disconnect your user from the server; as a result your nickname will become available again in that server.
+- Disconnect your user from the server; as a result your nickname will become available again in that server.
+![Disconnect block img](images/disconnect-block.png "Disconnect block")
 
-- ![Send JSON block img](images/send-json-block.png "Send JSON block")
-Send a message specifying the JSON content and the recepient username.
+- Send a message specifying the JSON content and the recepient username.
+![Send JSON block img](images/send-json-block.png "Send JSON block")
 
-- ![Receive remote message img](images/remote-message.png "Remote message")
-To **receive a remote message** you must use the `when I receive` block with the "*any message*" parameter selected and then filter the message for the *remote message* type.
+- To **receive a remote message** you must use the `when I receive` block with the "*any message*" parameter selected and then filter the message for the *remote message* type.
 Note that every time our Walkie Talkie actor receives a message intended for our user (sent to our nickname) it broadcasts a JSON message with the fields `type` set to "*remote message*", `sender` and `content` where the `content` corresponds to the actual JSON object that was sent to us by the `sender`.
+![Receive remote message img](images/remote-message.png "Remote message")
 ```
 {
-    "type": "remote message"
+    "type": "remote message",
     "sender": "...",
     "content": { ... }
 }

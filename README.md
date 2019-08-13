@@ -142,6 +142,6 @@ When the ball passes from one world to another the message exchanged between the
 
 ---
 
-## Licence
+## License
 
 *Shared Snap!* is licensed under the [Affero General Public License](https://www.gnu.org/licenses/agpl-3.0).

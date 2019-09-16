@@ -1,12 +1,5 @@
 # Shared Snap!
 
-## Team members
-Marco Canducci - marco.canducci@studio.unibo.it  
-Daniele Schiavi - daniele.schiavi@studio.unibo.it  
-
-## Course reference
-https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2018/430273
-
 ## A Computational Thinking Project
 
 The *Shared Snap!* project wants to combine [Berkeley's Snap!](https://snap.berkeley.edu/) learning tool with a custom RESTful Web Server in order to allow microworlds intercommunication. 
@@ -16,6 +9,13 @@ Given the absence of this feature in the *Snap!* environment, we decided to tack
 The image below shows the *sequence diagram* for the data exchanged between the Client actor (the one who wants to communicate with another actor remotely), the Walkie Talkie actor, and the Web Server.
 
 ![alt text](images/sequence-diagram.png "Sequence diagram")
+
+Course reference: 
+- https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2018/430273
+
+Team members:
+- marco.canducci@studio.unibo.it  
+- daniele.schiavi@studio.unibo.it 
 
 ---
 
@@ -78,7 +78,7 @@ From there, we added an abstraction layer through a set of new *Snap!* blocks, u
 
 To use *Shared Snap!* you need to import first our custom blocks and then the Walkie Talkie actor. It's possible to choose between the following methods:
 - clone the repository and import to your Snap project the *shared snap blocks.xml* and *walkie talkie.xml* files placed inside the *client* directory;
-- alternatively, just downloads the single files and import them to your Snap project: [custom blocks](https://mega.nz/#!WqB23IaD!Bj8oBY--8HjXohJ3RkJZmmCmylj3mU3nTABGGIbDFaU), [walkie talkie actor](https://mega.nz/#!CzISnIDI!cy1O5L8HKuzYTDkWIMirETsMt6ze_ZS5-IbwkII1NaY).
+- alternatively, just downloads the single files and import them to your Snap project: [custom blocks](https://www.dropbox.com/s/06dxusdtl21xjzc/shared%20snap%20blocks.xml?dl=0), [walkie talkie actor](https://www.dropbox.com/s/gh8gd9tcf15kzxe/walkie%20talkie.xml?dl=0).
 
 ### Interaction API
 

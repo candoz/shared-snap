@@ -1,27 +1,39 @@
 # Shared Snap!
 
+## Table of Contents
+
+- [Intro: a Computational Thinking Project](#a-computational-thinking-project)
+- [Server](#server-side)
+    - [What we've done](#server-details-what-weve-done)
+    - [Execution requirements](#server-execution-requirements)
+    - [Setup](#server-setup)
+- [Client](#client-side)
+    - [What we've done](#client-details-what-weve-done)
+    - [Execution requirements](#client-execution-requirements)
+    - [Setup](#client-setup)
+    - [Interaction API's](#interaction-apis)
+- [Try it yourself!](#try-it-yourself)
+    - [Demo 1: Messaging](#demo-1-messaging)
+    - [Demo 2: Bouncing ball](#demo-2-bouncing-ball)
+- [About us](#about-us)
+- [License](#license)
+
+
 ## A Computational Thinking Project
 
 The *Shared Snap!* project wants to combine [Berkeley's Snap!](https://snap.berkeley.edu/) learning tool with a custom RESTful Web Server in order to allow microworlds intercommunication. 
 
-Given the absence of this feature in the *Snap!* environment, we decided to tackle this challenge: we think that introducing communication between microworlds residing in different browser windows (or even in different machines!) could be very fun and engaging, allowing for lots of new possibilities. Already existing *Snap!* official libraries allow to make RESTful requests and to interact with JSON objects, therefore the choice of a RESTful Web Server came up naturally.
+Given the absence of this feature in the *Snap!* environment, we decided to tackle this challenge: we think that introducing communication between microworlds residing in different browser windows (or even in different machines) could be very fun and engaging, allowing for lots of new possibilities. Already existing *Snap!* official libraries allow to make RESTful requests and to interact with JSON objects, therefore the choice of a RESTful Web Server came up naturally.
 
 The image below shows the *sequence diagram* for the data exchanged between the Client actor (the one who wants to communicate with another actor remotely), the Walkie Talkie actor, and the Web Server.
 
 ![alt text](images/sequence-diagram.png "Sequence diagram")
 
-Course reference: 
-- https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2018/430273
-
-Team members:
-- marco.canducci@studio.unibo.it  
-- daniele.schiavi@studio.unibo.it 
-
 ---
 
 ## Server side
 
-### What we've done
+### Server details: What we've done 
 
 First of all, we thought of modeling the *connection* as something to do in order to allow the sending and reception of messages to and from other users connected to the same server.
 
@@ -29,14 +41,13 @@ We decided to introduce at least a simple authentication system that assign an u
 
 The custom Web Server has been developed using *Kotlin*, *VertX* and *MongoDB*, implementing handlers for a set of previously defined RESTful API which [documentation is available on SwaggerHub](https://app.swaggerhub.com/apis-docs/candoz/shared-snap/1.0#/).
 
-
 ### Server execution requirements
 
 - Java 8 must be installed;
 
 - a MongoDB daemon must be running on `localhost:10000`.
 
-### Server Setup
+### Server setup
 
 It is possible to download the source code and the executable jar directly from the [project releases page](https://github.com/candoz/shared-snap/releases).
 
@@ -58,7 +69,7 @@ java -jar shared-snap-1.0-all.jar
 
 ## Client side
 
-### What we've done
+### Client details: What we've done
 
 We started the client development by importing two official *Snap!* libraries and modifying them in order to obtain a better error handling capabilities:
 
@@ -80,7 +91,7 @@ To use *Shared Snap!* you need to import first our custom blocks and then the Wa
 - clone the repository and import to your Snap project the *shared snap blocks.xml* and *walkie talkie.xml* files placed inside the *client* directory;
 - alternatively, just downloads the single files and import them to your Snap project: [custom blocks](https://www.dropbox.com/s/32r0m4b95ky5a7j/shared%20snap%20blocks.xml?dl=0), [walkie talkie actor](https://www.dropbox.com/s/gkei0joeotqdcju/walkie%20talkie.xml?dl=0).
 
-### Interaction API
+### Interaction API's
 
 The *Walkie Talkie* actor offers simple a API for connecting, disconnecting, sending and receiving messages.
 
@@ -111,9 +122,37 @@ Note that every time our Walkie Talkie actor receives a message intended for our
 
 ---
 
-## Prototype demonstration
+## Try it yourself!
 
-To showcase our project functionalities we decided to implement a public demo that shows how a ball can bounce from one microworld to another.
+To showcase our project functionalities we decided to implement two public demos.  
+The first one is like an *hello world* where a text message is exchanged from a sender to a receiver.  
+The second shows how a ball can bounce from one microworld to another.  
+
+### Demo 1: Messaging
+
+**To run the first demo follow these steps**:
+
+1. start the server - see the [server setup](#server-setup)
+
+2. open both the following links: [receiver](https://snap.berkeley.edu/project?user=schiavi&project=Shared%20Snap%20-%20Messaging%20Example%20-%20Receiver), [sender](https://snap.berkeley.edu/project?user=schiavi&project=Shared%20Snap%20-%20Messaging%20Example%20-%20Sender)
+
+3. click the green flag on the **Receiver**
+
+4. click the green flag on the **Sender**
+
+### Demo 2: Bouncing ball
+
+**To run the second demo follow these steps**:
+
+1. start the server - see the [server setup](#server-setup)
+
+2. open both the following links: [left screen](https://snap.berkeley.edu/project?user=schiavi&project=Shared%20Snap%20-%20Ball%20Example%20-%20Left), [right screen](https://snap.berkeley.edu/project?user=schiavi&project=Shared%20Snap%20-%20Ball%20Example%20-%20Right)
+
+3. on the **right** screen hit the `c` button to connect to the server (the circle inside the walkie talkie will light up from gray to green)
+
+4. on the **left** screen hit the `c` button to connect to the server (the circle inside the walkie talkie will light up from gray to green)
+
+The ball will appear at the center of the left screen and will start moving from one browser window to the other.
 
 ![Side by side demo](images/side-by-side-demo.gif "Side by side demo")
 
@@ -127,18 +166,16 @@ When the ball passes from one world to another the message exchanged between the
 }
 ```
 
-**To run the demo follow these steps**:
+---
 
-1. start the Web Service on your machine
+## About us
 
-2. open both the following links:  [left screen](https://snap.berkeley.edu/project?user=schiavi&project=Shared%20Snap%20-%20Ball%20Example%20-%20Left), [right screen](https://snap.berkeley.edu/project?user=schiavi&project=Shared%20Snap%20-%20Ball%20Example%20-%20Right)
+Course reference: 
+- https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2018/430273
 
-3. on the **right** screen:
-    - hit the `c` button to connect to the server (the circle inside the walkie talkie will light up from gray to green)
-
-4. on the **left** screen:
-    - hit the `c` button to connect to the server (the circle inside the walkie talkie will light up from gray to green)
-    - the ball will appear at the center of the screen and will start moving from one browser window to the other.
+Team members:
+- marco.canducci@studio.unibo.it  
+- daniele.schiavi@studio.unibo.it 
 
 ---
 

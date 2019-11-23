@@ -64,7 +64,7 @@ We started the client development by importing two official *Snap!* libraries an
 
 - we extended `Web Services Access (HTTPS)` in order to make it possibile to read both the *body* and the *http response code*. This way, our *Walkie Talkie* actor can be able to always know and report back the reason of an eventual request failure;
 
-- we extended `Deal with JSON data` in order to better manage the transformation error that may arise from a JSON  formatted string to Snap's list conversion.
+- we extended `Deal with JSON data` in order to better manage the transformation error that may arise from a JSON formatted string to Snap's list conversion.
 
 From there, we added an abstraction layer through a set of new *Snap!* blocks, useful for the interaction with our custom Web server. Finally, we added an additional abstraction layer with the purpose of hiding technicalities such as the polling and authentication system behind the *Walkie Talkie* actor, allowing the use of the application even by less experienced users.  
 
@@ -78,7 +78,7 @@ From there, we added an abstraction layer through a set of new *Snap!* blocks, u
 
 To use *Shared Snap!* you need to import first our custom blocks and then the Walkie Talkie actor. It's possible to choose between the following methods:
 - clone the repository and import to your Snap project the *shared snap blocks.xml* and *walkie talkie.xml* files placed inside the *client* directory;
-- alternatively, just downloads the single files and import them to your Snap project: [custom blocks](https://www.dropbox.com/s/06dxusdtl21xjzc/shared%20snap%20blocks.xml?dl=0), [walkie talkie actor](https://www.dropbox.com/s/gh8gd9tcf15kzxe/walkie%20talkie.xml?dl=0).
+- alternatively, just downloads the single files and import them to your Snap project: [custom blocks](https://www.dropbox.com/s/32r0m4b95ky5a7j/shared%20snap%20blocks.xml?dl=0), [walkie talkie actor](https://www.dropbox.com/s/gkei0joeotqdcju/walkie%20talkie.xml?dl=0).
 
 ### Interaction API
 

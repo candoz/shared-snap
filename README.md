@@ -38,7 +38,7 @@ The custom Web Server has been developed using *Kotlin*, *VertX* and *MongoDB*, 
 
 ### Server Setup
 
-It is possible to download the source code and the executable jar directly from the [project releases page](releases).
+It is possible to download the source code and the executable jar directly from the [project releases page](https://github.com/candoz/shared-snap/releases).
 
 You can modify the configuration file **`config.yaml`** according to your needs: you can set the `host` and `port` of the server and the MongoDB `connection_string`. By default they are set respectively to: *localhost*, *10000* and *mongodb://localhost:27017/snapdb*.
 

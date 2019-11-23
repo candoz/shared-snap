@@ -131,7 +131,7 @@ When the ball passes from one world to another the message exchanged between the
 
 1. start the Web Service on your machine
 
-2. open both the following links:  [left screen](https://snap.berkeley.edu/snap/snap.html#present:Username=ct-unibo-ce-1819&ProjectName=Canducci%20Schiavi%20-%20left%20-%20Shared%20Snap%20Actor), [right screen](https://snap.berkeley.edu/snap/snap.html#present:Username=ct-unibo-ce-1819&ProjectName=Canducci%20Schiavi%20-%20right%20-%20Shared%20Snap%20Actor)
+2. open both the following links:  [left screen](https://snap.berkeley.edu/project?user=schiavi&project=Shared%20Snap%20-%20Ball%20Example%20-%20Left), [right screen](https://snap.berkeley.edu/project?user=schiavi&project=Shared%20Snap%20-%20Ball%20Example%20-%20Right)
 
 3. on the **right** screen:
     - hit the `c` button to connect to the server (the circle inside the walkie talkie will light up from gray to green)
